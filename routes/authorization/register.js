@@ -30,7 +30,7 @@ router.post('/register', function (req, res, next) {
                             .then((newAccount) => {
                                 var token = jwt.sign({ _id: newAccount.dataValues._id }, process.env.SECRET_TOKEN);
                                 res.cookie('access-token', token, {
-                                    httpOnly: false, // Recommended to prevent access from client-side scripts
+                                    httpOnly: true, // Recommended to prevent access from client-side scripts
                                     secure: true, // Ensure cookie is sent over HTTPS
                                     sameSite: 'None', // Allow cookie to be sent in cross-site requests
                                     path: '/', // Makes the cookie available across the entire domain
