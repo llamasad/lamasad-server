@@ -12,7 +12,7 @@ var db = require('./config/db');
 var cors = require('cors');
 
 var app = express();
-
+console.log(process.env.CLIENT_DOMAIN);
 var corsOptions = {
     origin: process.env.CLIENT_DOMAIN, // Allow only http://localhost:3000 to access the API
     optionsSuccessStatus: 200, // Respond with 200 for preflight requests
