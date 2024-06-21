@@ -16,6 +16,7 @@ var corsOptions = {
     origin: process.env.CLIENT_URL, // Allow only http://localhost:3000 to access the API
     optionsSuccessStatus: 200, // Respond with 200 for preflight requests
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 };
 
 //midleware cors
