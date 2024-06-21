@@ -48,12 +48,12 @@ router.post('/login', async function (req, res, next) {
         httpOnly: true, // Recommended to prevent access from client-side scripts
         secure: true, // Ensure cookie is sent over HTTPS
         sameSite: 'None', // Allow cookie to be sent in cross-site requests
-        path: '/', // Makes the cookie available across the entire domain
+        path: '/', // Makes the cookdie available across the entire domain
         maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie expiration (30 days)
     });
 
     // Send success response
-    res.json({ message: 'Login successful' });
+    res.json({ message: 'Login successful', accessToken: token });
 });
 
 module.exports = router;

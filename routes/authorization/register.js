@@ -37,7 +37,7 @@ router.post('/register', function (req, res, next) {
                                     maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie expiration (30 days)
                                 });
 
-                                res.json({ message: 'Account created successfully' });
+                                res.json({ message: 'Account created successfully', accessToken: token });
                             })
                             .catch((err) => {
                                 next(err);
