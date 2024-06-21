@@ -14,7 +14,7 @@ var cors = require('cors');
 var app = express();
 
 var corsOptions = {
-    origin: 'http://localhost:3000', // Allow only http://localhost:3000 to access the API
+    origin: process.env.CLIENT_DOMAIN, // Allow only http://localhost:3000 to access the API
     optionsSuccessStatus: 200, // Respond with 200 for preflight requests
     credentials: true,
 };
@@ -47,7 +47,7 @@ var server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: process.env.CLIENT_URL,
         methods: ['GET', 'POST'],
     },
 
