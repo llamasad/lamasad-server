@@ -47,7 +47,7 @@ router.post('/login', async function (req, res, next) {
     res.cookie('access-token', token, {
         httpOnly: false, // Recommended to prevent access from client-side scripts
         secure: true, // Ensure cookie is sent over HTTPS
-        sameSite: 'none', // Allow cookie to be sent in cross-site requests
+        sameSite: 'None', // Allow cookie to be sent in cross-site requests
         path: '/', // Makes the cookie available across the entire domain
         maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie expiration (30 days)
     });
