@@ -12,15 +12,15 @@ var db = require('./config/db');
 var cors = require('cors');
 
 var app = express();
-var corsOptions = {
-    origin: process.env.CLIENT_URL, // Allow only http://localhost:3000 to access the API
-    optionsSuccessStatus: 200, // Respond with 200 for preflight requests
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-};
+// var corsOptions = {
+//     origin: process.env.CLIENT_URL, // Allow only http://localhost:3000 to access the API
+//     optionsSuccessStatus: 200, // Respond with 200 for preflight requests
+//     credentials: true,
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+// };
 
 //midleware cors
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
