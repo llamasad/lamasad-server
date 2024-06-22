@@ -3,8 +3,8 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "start": "node index.js",
-        "build": "echo 'No build necessary'"
+        "build": "node index.js",
+        "start": "echo 'No build necessary'"
     },
     "dependencies": {
         "axios": "^1.6.8",
