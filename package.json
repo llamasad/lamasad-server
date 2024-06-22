@@ -3,7 +3,8 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "build": "node ./bin/www"
+        "start": "node index.js",
+        "build": "echo 'No build necessary'"
     },
     "dependencies": {
         "axios": "^1.6.8",
