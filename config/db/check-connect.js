@@ -1,4 +1,4 @@
-var sequelize = require('.');
+import sequelize from './index';
 let connectStatus = 'notConnected';
 (async function () {
     try {
@@ -12,4 +12,4 @@ let connectStatus = 'notConnected';
         console.error('Unable to connect to the database:', error);
     }
 })();
-module.exports = connectStatus;
+export default connectStatus;

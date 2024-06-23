@@ -1,6 +1,15 @@
-var express = require('express');
-var router = express.Router();
-var { User, MacroTaskUser, MacroTask, MicroTask, MicroTaskUser, ActivityUser, HistoryText } = require('../../models');
+import express from 'express';
+import {
+    User,
+    MacroTaskUser,
+    MacroTask,
+    MicroTask,
+    MicroTaskUser,
+    ActivityUser,
+    HistoryText,
+} from '../../models/index.js';
+
+const router = express.Router();
 
 router.post('/user-permission', async function (req, res) {
     const { task_id, _id: user_id, permission, username, userTag } = req.body;
@@ -75,4 +84,4 @@ router.post('/user-permission', async function (req, res) {
 
 // Function to decode JWT token (You need to implement this function)
 
-module.exports = router;
+export default router;

@@ -1,20 +1,20 @@
-var express = require('express');
-var router = express.Router(); // Initialize Nodemaile
-var apiRouter = express.Router();
-var user = require('./user');
-var project = require('./project');
-var task = require('./task');
-var tasks = require('./tasks');
-var activity = require('./activity');
-var usersTask = require('./users-task');
-var activitiesTasksChild = require('./activities-tasks-child');
-var history = require('./history');
-var users = require('./users');
-var userPermission = require('./user-permission');
-var fileAttach = require('./file-attach');
-var { Account, User } = require('../../models');
+import express from 'express';
+import user from './user.js';
+import project from './project.js';
+import task from './task.js';
+import tasks from './tasks.js';
+import activity from './activity.js';
+import usersTask from './users-task.js';
+import activitiesTasksChild from './activities-tasks-child.js';
+import history from './history.js';
+import users from './users.js';
+import userPermission from './user-permission.js';
+import fileAttach from './file-attach.js';
+import { Account, User } from '../../models/index.js';
+import decodeToken from '../../service/jwt-service.js';
 
-const decodeToken = require('../../service/jwt-service');
+const router = express.Router();
+const apiRouter = express.Router();
 
 router.use('/', activity);
 
@@ -70,4 +70,4 @@ apiRouter.use(
     },
     router,
 );
-module.exports = apiRouter;
+export default apiRouter;

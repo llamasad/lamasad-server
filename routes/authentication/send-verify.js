@@ -1,8 +1,8 @@
-var express = require('express');
+import express from 'express';
+import nodemailer from 'nodemailer';
+import { localStore } from './email-verify.js';
+import { Account } from '../../models/index.js';
 var router = express.Router();
-var nodemailer = require('nodemailer');
-var { localStore, retrieveVerificationToken } = require('./email-verify');
-var { Account } = require('../../models');
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
@@ -62,4 +62,4 @@ function saveVerificationToken(email, token) {
         localStore.tokenStoreVerification.push({ email, token, timeOutId });
     }
 }
-module.exports = router;
+export { router, saveVerificationToken };

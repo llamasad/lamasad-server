@@ -1,6 +1,6 @@
-var express = require('express');
+import express from 'express';
 var router = express.Router();
-var { HistoryText } = require('../../models');
+import { HistoryText } from '../../models/index.js';
 
 router.get('/history', async function (req, res) {
     const history_id = req.query.id;
@@ -34,4 +34,4 @@ router.post('/history', async function (req, res) {
 
 // Function to decode JWT token (You need to implement this function)
 
-module.exports = router;
+export default router;

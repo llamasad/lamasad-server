@@ -1,6 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var { User } = require('../../models');
+import express from 'express';
+import { User } from '../../models/index.js';
+
+const router = express.Router();
 
 router.get('/user', async function (req, res) {
     const user = await User.findOne({ where: { account_id: req.bearerToken } });
@@ -9,4 +10,4 @@ router.get('/user', async function (req, res) {
 
 // Function to decode JWT token (You need to implement this function)
 
-module.exports = router;
+export default router;

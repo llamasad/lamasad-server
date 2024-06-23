@@ -1,6 +1,6 @@
-var express = require('express');
+import express from 'express';
+import { MicroTask, Activity } from '../../models/index.js';
 var router = express.Router();
-var { MicroTask, Activity } = require('../../models');
 
 router.get('/tasks-activities-child', async function (req, res) {
     try {
@@ -23,4 +23,4 @@ router.get('/tasks-activities-child', async function (req, res) {
     }
 });
 
-module.exports = router;
+export default router;

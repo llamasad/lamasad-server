@@ -1,4 +1,4 @@
-var { Message } = require('../models');
+import { Message } from '../models/index.js';
 
 const ioCallBack = (io) => (socket) => {
     console.log('a user connected');
@@ -49,4 +49,4 @@ const ioCallBack = (io) => (socket) => {
     if (!socket.recovered) {
     }
 };
-module.exports = ioCallBack;
+export default ioCallBack;

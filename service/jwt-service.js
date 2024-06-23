@@ -1,4 +1,4 @@
-var jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 function decodeToken(token) {
     try {
         const decoded = jwt.decode(token);
@@ -7,4 +7,4 @@ function decodeToken(token) {
         console.error('Error decoding token:', error.message);
     }
 }
-module.exports = decodeToken;
+export default decodeToken;

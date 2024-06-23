@@ -1,7 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var { MacroTaskUser, MicroTaskUser, MicroTask, MacroTask, Sequelize } = require('../../models');
-const { Op } = require('sequelize');
+import express from 'express';
+import { MacroTaskUser, MicroTaskUser, MicroTask, MacroTask } from '../../models/index.js';
+import { Op } from 'sequelize';
+
+const router = express.Router();
 
 router.get('/tasks', async function (req, res) {
     try {
@@ -84,4 +85,4 @@ router.get('/tasks', async function (req, res) {
     }
 });
 
-module.exports = router;
+export default router;

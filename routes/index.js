@@ -1,11 +1,12 @@
-var express = require('express');
+import express from 'express';
+import api from './api/index.js';
+import author from './authorization/index.js';
+import authen from './authentication/index.js';
 var router = express.Router();
-var author = require('./authorization');
-var authen = require('./authentication');
-var api = require('./api');
+
 /* GET home page. */
 router.use('/', api);
 router.use('/', author);
 router.use('/', authen);
 
-module.exports = router;
+export default router;

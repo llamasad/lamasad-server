@@ -1,4 +1,4 @@
-var express = require('express');
+import express from 'express';
 var router = express.Router(); // Initialize Nodemailer transporter
 
 // Route to handle user registration and email verification
@@ -37,8 +37,4 @@ function retrieveVerificationToken(email) {
     }
 }
 
-function markEmailAsVerified(email) {
-    // Update the user's email status as verified in the database
-}
-
-module.exports = { localStore, router, retrieveVerificationToken };
+export { localStore, router, retrieveVerificationToken };

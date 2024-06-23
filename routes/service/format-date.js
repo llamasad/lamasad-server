@@ -13,4 +13,4 @@ function formatDateFromDatabase(dateString) {
     return `${hours}:${minutes} ${day}/${month}/${year}`;
 }
 
-module.exports = formatDateFromDatabase;
+export default formatDateFromDatabase;

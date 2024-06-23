@@ -1,6 +1,6 @@
-const { DataTypes, Model } = require('sequelize');
-const sequelize = require('../config/db');
-var { init, userTagCount } = require('../service/user-tag-count');
+import { DataTypes, Model } from 'sequelize';
+import sequelize from '../config/db/index.js';
+import { init, userTagCount } from '../service/user-tag-count.js';
 
 class Account extends Model {}
 class User extends Model {}
@@ -697,7 +697,7 @@ sequelize
     })
     .catch((error) => console.error('Error creating database & tables:', error));
 
-module.exports = {
+export {
     Account,
     User,
     UserTagCount,

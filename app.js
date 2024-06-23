@@ -1,68 +1,74 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var connectStatus = require('./config/db/check-connect');
-require('dotenv').config();
-var bodyParser = require('body-parser');
-var indexRouter = require('./routes');
-var db = require('./config/db');
-var cors = require('cors');
+import createError from 'http-errors';
+import express from 'express';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import dotenv from 'dotenv';
+dotenv.config();
+import bodyParser from 'body-parser';
+import indexRouter from './routes/index.js'; // Ensure the file path is correct
+import db from './config/db/index.js'; // Ensure the file path is correct
+import cors from 'cors';
+import http from 'http';
+import { Server } from 'socket.io';
+import ioCallBack from './service/socket-io-service.js'; // Ensure the file path is correct
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-var app = express();
-var corsOptions = {
+// Convert the URL to a directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const app = express();
+const corsOptions = {
     origin: process.env.CLIENT_URL, // Allow only http://localhost:3000 to access the API
     optionsSuccessStatus: 200, // Respond with 200 for preflight requests
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 };
+app.set('view engine', 'ejs');
 
-//midleware cors
+// Middleware cors
 app.use(cors(corsOptions));
 
-// view engine setup
-
-// parse application/x-www-form-urlencoded
+// Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// parse application/json
+// Parse application/json
 app.use(bodyParser.json());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-var http = require('http');
-var { Server } = require('socket.io');
-var ioCallBack = require('./service/socket-io-service');
 
 app.use('/', indexRouter);
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
         origin: process.env.CLIENT_URL,
         methods: ['GET', 'POST'],
     },
-
     connectionStateRecovery: {},
 });
+
 io.on('connection', ioCallBack(io));
-// catch 404 and forward to error handler
+
+// Catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));
 });
 
-// error handler
+// Error handler
 app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
+    // Set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-    // render the error page
+    // Render the error page
     res.status(err.status || 500);
     res.render('error');
 });
-module.exports = { app, server };
+
+export { app, server };

@@ -1,7 +1,7 @@
-var express = require('express');
-var decodeToken = require('../../service/jwt-service');
+import express from 'express';
+import decodeToken from '../../service/jwt-service.js';
+import { User, Account } from '../../models/index.js';
 var router = express.Router();
-var { Account, User } = require('../../models');
 
 router.get('/user-check', async function (req, res) {
     // Extract the _id from the bearer token
@@ -36,4 +36,4 @@ router.get('/user-check', async function (req, res) {
 
 // Function to decode JWT token (You need to implement this function)
 
-module.exports = router;
+export default router;

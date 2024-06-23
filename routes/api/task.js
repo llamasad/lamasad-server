@@ -1,17 +1,15 @@
-var express = require('express');
-var router = express.Router();
-var {
+import express from 'express';
+import {
     MacroTask,
     MicroTask,
     History,
     Chat,
+    HistoryText,
     MacroTaskUser,
     MicroTaskUser,
-    HistoryText,
-    User,
     Message,
-} = require('../../models');
-const { last } = require('lodash');
+} from '../../models/index.js';
+var router = express.Router();
 
 router.post('/task', async function (req, res) {
     const own_task = req.query.own_task;
@@ -327,4 +325,4 @@ router.delete('/task/:id', async function (req, res) {
     }
 });
 
-module.exports = router;
+export default router;

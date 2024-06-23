@@ -47,4 +47,4 @@ async function increaseUserTagCount(UserTagCount) {
         console.error('Error updating count:', err);
     }
 }
-module.exports = { userTagCount, init, increaseUserTagCount, numberToUserTagCount };
+export { userTagCount, init, increaseUserTagCount, numberToUserTagCount };

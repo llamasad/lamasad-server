@@ -1,6 +1,8 @@
-var express = require('express');
-var router = express.Router();
-var { ProjectUser, Project } = require('../../models');
+import express from 'express';
+import { Router } from 'express';
+import { ProjectUser, Project } from '../../models/index.js';
+
+const router = Router();
 
 router.get('/project', async function (req, res) {
     try {
@@ -20,4 +22,4 @@ router.get('/project', async function (req, res) {
 
 // Function to decode JWT token (You need to implement this function)
 
-module.exports = router;
+export default router;

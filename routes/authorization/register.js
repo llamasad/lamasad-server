@@ -1,9 +1,10 @@
-var express = require('express');
+import express from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
+import { Account } from '../../models/index.js';
 var router = express.Router();
-var jwt = require('jsonwebtoken');
-var bcrypt = require('bcrypt');
-var { Account } = require('../../models');
-const { v4: uuidv4 } = require('uuid');
+
 const saltRounds = 10;
 
 router.post('/register', function (req, res, next) {
@@ -52,4 +53,4 @@ router.post('/register', function (req, res, next) {
         });
 });
 
-module.exports = router;
+export default router;

@@ -1,9 +1,9 @@
-var express = require('express');
+import express from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import axios from 'axios';
+import { Account } from '../../models/index.js';
 var router = express.Router();
-var jwt = require('jsonwebtoken');
-var { Account } = require('../../models');
-const bcrypt = require('bcrypt');
-var axios = require('axios');
 
 router.post('/login', async function (req, res, next) {
     var email = req.body.email;
@@ -56,4 +56,4 @@ router.post('/login', async function (req, res, next) {
     res.json({ message: 'Login successful', accessToken: token });
 });
 
-module.exports = router;
+export default router;

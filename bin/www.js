@@ -4,11 +4,8 @@
  * Module dependencies.
  */
 
-const exp = require('constants');
-var { app, server } = require('../app');
-var debug = require('debug')('lamasad-backend:server');
-var http = require('http');
-var { Server } = require('socket.io');
+import { app, server } from '../app.js';
+import debug from 'debug';
 /**
  * Get port from environment and store in Express.
  */
@@ -83,4 +80,4 @@ function onListening() {
     var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
     debug('Listening on ' + bind);
 }
-module.exports = server;
+export default server;

@@ -1,10 +1,11 @@
-var express = require('express');
-var decodeToken = require('../../service/jwt-service');
+// Initialize express router
+import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import multer from 'multer';
+import decodeToken from '../../service/jwt-service.js';
+import { User, UserTagCount, Account } from '../../models/index.js';
+import { numberToUserTagCount, increaseUserTagCount } from '../../service/user-tag-count.js';
 var router = express.Router();
-var multer = require('multer');
-var { Account, User, UserTagCount } = require('../../models');
-var { v4: uuidv4 } = require('uuid');
-var { userTagCount, increaseUserTagCount, numberToUserTagCount } = require('../../service/user-tag-count');
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -79,4 +80,4 @@ router.post(
 
 // Function to decode JWT token (You need to implement this function)
 
-module.exports = router;
+export default router;

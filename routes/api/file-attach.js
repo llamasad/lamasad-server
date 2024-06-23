@@ -1,18 +1,7 @@
-var express = require('express');
+import express from 'express';
+import { FileAttach } from '../../models/index.js';
 var router = express.Router();
 
-var {
-    ActivityUser,
-    Activity,
-    History,
-    Chat,
-    MacroTaskUser,
-    MicroTaskUser,
-    MicroTask,
-    MacroTask,
-    HistoryText,
-    FileAttach,
-} = require('../../models');
 router.get('/file-attach/:id', async function (req, res) {
     try {
         const activity_id = req.params.id;
@@ -26,4 +15,4 @@ router.get('/file-attach/:id', async function (req, res) {
     }
 });
 
-module.exports = router;
+export default router;

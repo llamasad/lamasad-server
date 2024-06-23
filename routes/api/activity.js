@@ -1,22 +1,22 @@
-var express = require('express');
-var router = express.Router();
-var multer = require('multer');
-var uuidv4 = require('uuid').v4;
-var path = require('path'); // Import path module
-var fs = require('fs');
-var {
-    ActivityUser,
+import express from 'express';
+import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import {
     Activity,
     History,
     Chat,
-    MacroTaskUser,
-    MicroTaskUser,
-    MicroTask,
-    MacroTask,
     HistoryText,
     FileAttach,
-} = require('../../models');
-const { type } = require('os');
+    MicroTask,
+    MicroTaskUser,
+    MacroTask,
+    MacroTaskUser,
+    ActivityUser,
+} from '../../models/index.js';
+var router = express.Router();
+
 router.post('/activity', async function (req, res) {
     try {
         const [task_type, task_id] = req.query.task_id.split('-');
@@ -188,4 +188,4 @@ router.put('/activity/:id', upload.array('addFile'), async function (req, res) {
     }
 });
 
-module.exports = router;
+export default router;
