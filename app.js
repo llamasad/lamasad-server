@@ -7,7 +7,6 @@ var connectStatus = require('./config/db/check-connect');
 require('dotenv').config();
 var bodyParser = require('body-parser');
 var indexRouter = require('./routes');
-var usersRouter = require('./routes/users');
 var db = require('./config/db');
 var cors = require('cors');
 
@@ -23,8 +22,6 @@ var corsOptions = {
 app.use(cors(corsOptions));
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,7 +38,6 @@ var { Server } = require('socket.io');
 var ioCallBack = require('./service/socket-io-service');
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 var server = http.createServer(app);
 
