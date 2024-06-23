@@ -1,2 +1,2 @@
-import { app } from './app.js';
-export default app;
+import Server from './bin/www';
+export default Server;
