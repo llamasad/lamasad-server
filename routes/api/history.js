@@ -1,11 +1,14 @@
 import express from 'express';
-var router = express.Router();
-import { HistoryText } from '../../models/index.js';
+import prisma from '../../lib/prisma.js';
+
+const router = express.Router();
 
 router.get('/history', async function (req, res) {
-    const history_id = req.query.id;
+    const history_id = Number(req.query.id);
     try {
-        const history = await HistoryText.findAll({ where: { history_id: history_id } });
+        const history = await prisma.historyText.findMany({
+            where: { history_id: history_id },
+        });
         if (!history) {
             return res.json({ data: [] });
         }
@@ -24,14 +27,16 @@ router.get('/history', async function (req, res) {
 
 router.post('/history', async function (req, res) {
     try {
-        const history = await HistoryText.create({ ...req.body });
+        const history = await prisma.historyText.create({
+            data: {
+                ...req.body,
+            },
+        });
         res.json({ data: history });
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
     }
 });
-
-// Function to decode JWT token (You need to implement this function)
 
 export default router;

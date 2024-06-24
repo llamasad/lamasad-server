@@ -693,25 +693,24 @@ sequelize
     .sync({ alter: true })
     .then(() => {
         init(UserTagCount, User);
-        console.log('Database & tables created!');
     })
     .catch((error) => console.error('Error creating database & tables:', error));
 
-export {
-    Account,
-    User,
-    UserTagCount,
-    MicroTask,
-    MacroTask,
-    Chat,
-    Message,
-    Activity,
-    FileAttach,
-    History,
-    Project,
-    ProjectUser,
-    HistoryText,
-    MicroTaskUser,
-    MacroTaskUser,
-    ActivityUser,
-};
+// export {
+//     Account,
+//     User,
+//     UserTagCount,
+//     MicroTask,
+//     MacroTask,
+//     Chat,
+//     Message,
+//     Activity,
+//     FileAttach,
+//     History,
+//     Project,
+//     ProjectUser,
+//     HistoryText,
+//     MicroTaskUser,
+//     MacroTaskUser,
+//     ActivityUser,
+// };

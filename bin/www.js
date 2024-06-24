@@ -6,6 +6,7 @@
 
 import { app, server } from '../app.js';
 import debug from 'debug';
+import prisma from '../lib/prisma.js';
 /**
  * Get port from environment and store in Express.
  */

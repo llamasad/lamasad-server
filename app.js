@@ -7,13 +7,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 import bodyParser from 'body-parser';
 import indexRouter from './routes/index.js'; // Ensure the file path is correct
-import db from './config/db/index.js'; // Ensure the file path is correct
 import cors from 'cors';
 import http from 'http';
 import { Server } from 'socket.io';
 import ioCallBack from './service/socket-io-service.js'; // Ensure the file path is correct
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { init } from './service/user-tag-count.js';
 
 // Convert the URL to a directory name
 const __filename = fileURLToPath(import.meta.url);
@@ -27,6 +27,7 @@ const corsOptions = {
 };
 app.set('view engine', 'ejs');
 
+init();
 // Middleware cors
 app.use(cors(corsOptions));
 
@@ -68,7 +69,7 @@ app.use(function (err, req, res, next) {
 
     // Render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.json({ error: err.message });
 });
 
 export { app, server };

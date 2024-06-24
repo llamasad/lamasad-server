@@ -6,8 +6,6 @@ var localStore = { tokenStoreVerification: [] };
 
 // Route to handle email verification
 router.post('/email-verify', (req, res) => {
-    console.log(localStore.tokenStoreVerification);
-
     const { email, token } = req.body;
     // Retrieve the verification token associated with the user's email
     const storedToken = retrieveVerificationToken(email);
@@ -35,6 +33,10 @@ function retrieveVerificationToken(email) {
     } else {
         return null;
     }
+}
+
+function markEmailAsVerified(email) {
+    // Update the user's email status as verified in the database
 }
 
 export { localStore, router, retrieveVerificationToken };

@@ -5,7 +5,6 @@ let connectStatus = 'notConnected';
         connectStatus = 'connecting';
         await sequelize.authenticate();
 
-        console.log('Connection has been established successfully.');
         connectStatus = 'successfully';
     } catch (error) {
         connectStatus = 'error';

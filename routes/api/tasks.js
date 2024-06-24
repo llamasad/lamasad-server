@@ -1,17 +1,15 @@
 import express from 'express';
-import { MacroTaskUser, MicroTaskUser, MicroTask, MacroTask } from '../../models/index.js';
-import { Op } from 'sequelize';
-
+import prisma from '../../lib/prisma.js';
 const router = express.Router();
 
 router.get('/tasks', async function (req, res) {
     try {
         const { filter, status, sort, page = 1, search } = req.query;
-        const userId = req.user._id;
-
+        const userId = req.user.id;
+        console.log(userId);
         // Fetch MacroTasks and MicroTasks for the given user_id
-        const userMacroTasks = await MacroTaskUser.findAll({ where: { user_id: userId } });
-        const userMicroTasks = await MicroTaskUser.findAll({ where: { user_id: userId } });
+        const userMacroTasks = await prisma.macroTaskUser.findMany({ where: { user_id: userId } });
+        const userMicroTasks = await prisma.microTaskUser.findMany({ where: { user_id: userId } });
         if (!userMacroTasks.length && !userMicroTasks.length) {
             return res.json({ data: [], status: { macro: {}, micro: {} } });
         }
@@ -19,13 +17,13 @@ router.get('/tasks', async function (req, res) {
         const microTaskIds = userMicroTasks.map((task) => task.microTask_id);
 
         // Build the base query filters
-        const macroTaskFilters = { _id: { [Op.in]: macroTaskIds } };
-        const microTaskFilters = { _id: { [Op.in]: microTaskIds } };
+        const macroTaskFilters = { id: { in: macroTaskIds } };
+        const microTaskFilters = { id: { in: microTaskIds } };
 
         // Add search filter if provided
         if (search) {
-            macroTaskFilters.title = { [Op.like]: `%${search}%` };
-            microTaskFilters.title = { [Op.like]: `%${search}%` };
+            macroTaskFilters.title = { contains: search };
+            microTaskFilters.title = { contains: search };
         }
 
         // Add status filter if provided
@@ -37,19 +35,19 @@ router.get('/tasks', async function (req, res) {
         // Fetch tasks based on filters
         const macroTasksPromise =
             (filter && filter.includes('macro')) || !filter
-                ? MacroTask.findAll({ where: macroTaskFilters })
+                ? prisma.macroTask.findMany({ where: macroTaskFilters })
                 : Promise.resolve([]);
         const microTasksPromise =
             (filter && filter.includes('micro')) || !filter
-                ? MicroTask.findAll({ where: microTaskFilters })
+                ? prisma.microTask.findMany({ where: microTaskFilters })
                 : Promise.resolve([]);
 
         const [macroTasks, microTasks] = await Promise.all([macroTasksPromise, microTasksPromise]);
 
         // Combine MacroTasks and MicroTasks into a single array
         let tasks = [
-            ...macroTasks.map((task) => ({ ...task.toJSON(), type: 'macro' })),
-            ...microTasks.map((task) => ({ ...task.toJSON(), type: 'micro' })),
+            ...macroTasks.map((task) => ({ ...task, type: 'macro' })),
+            ...microTasks.map((task) => ({ ...task, type: 'micro' })),
         ];
 
         // Count the status for macro and micro tasks
@@ -70,13 +68,13 @@ router.get('/tasks', async function (req, res) {
         }
 
         // Implement pagination
-        pageCount = Math.ceil((tasks.length + 1) / 20);
+        const pageCount = Math.ceil((tasks.length + 1) / 20);
 
         const pageSize = 20; // Number of tasks per page
         const startIndex = (page - 1) * (pageSize - 1);
         const endIndex = startIndex + pageSize - 1;
-        const paginatedTasks = tasks.slice(startIndex, endIndex);
-
+        var paginatedTasks = tasks.slice(startIndex, endIndex);
+        paginatedTasks = paginatedTasks.map((task) => ({ ...task, _id: task.id }));
         // Send the paginated and sorted tasks in the response
         res.json({ data: paginatedTasks, pageCount, status: statusCount });
     } catch (err) {

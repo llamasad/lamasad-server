@@ -1,8 +1,10 @@
 import express from 'express';
 import nodemailer from 'nodemailer';
 import { localStore } from './email-verify.js';
-import { Account } from '../../models/index.js';
-var router = express.Router();
+import prisma from '../../lib/prisma.js';
+
+const router = express.Router();
+
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
@@ -15,8 +17,8 @@ const transporter = nodemailer.createTransport({
 
 router.post('/send-verify', async (req, res) => {
     const email = req.body.email;
-    // Generate a verification token (you can use a library like crypto to generate random tokens)\    var account = await Account.findOne({ where: { email: email } });
-    var account = await Account.findOne({ where: { email: email } });
+    // Generate a verification token (you can use a library like crypto to generate random tokens)
+    const account = await prisma.account.findUnique({ where: { email: email } });
     if (!account) {
         if (!retrieveVerificationToken(email)) {
             const verificationToken = generateVerificationToken();
@@ -42,7 +44,7 @@ router.post('/send-verify', async (req, res) => {
             res.status(409).send('Wait for the previous OTP to expire');
         }
     } else {
-        res.status(409).send('Email is exist');
+        res.status(409).send('Email already exists');
     }
 });
 
@@ -54,12 +56,17 @@ function generateVerificationToken() {
 function saveVerificationToken(email, token) {
     const emailExists = localStore.tokenStoreVerification.find((item) => item.email === email);
     if (!emailExists) {
-        let timeOutId = setTimeout(() => {
-            localStore.tokenStoreVerification = localStore.tokenStoreVerification.filter((item) => {
-                return item.email !== email;
-            });
+        const timeOutId = setTimeout(() => {
+            localStore.tokenStoreVerification = localStore.tokenStoreVerification.filter(
+                (item) => item.email !== email,
+            );
         }, 60000);
         localStore.tokenStoreVerification.push({ email, token, timeOutId });
     }
 }
+
+function retrieveVerificationToken(email) {
+    return localStore.tokenStoreVerification.find((item) => item.email === email);
+}
+
 export { router, saveVerificationToken };

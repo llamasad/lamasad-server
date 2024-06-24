@@ -1,24 +1,20 @@
-import { Message } from '../models/index.js';
-
+import prisma from '../lib/prisma.js';
 const ioCallBack = (io) => (socket) => {
-    console.log('a user connected');
-
     socket.on('joinBoxChat', async (room) => {
         socket.join(room);
-        console.log(`User joined room: ${room}`);
         try {
-            const messages = await Message.findAll({
+            const messages = await prisma.message.findMany({
                 where: { chat_id: room },
-                order: [['created_at', 'DESC']],
-                limit: 10,
+                orderBy: { createdAt: 'desc' },
+                take: 10,
             });
-
             // Emit the latest messages to the user who joined the room
             socket.emit('latestMessages', messages.reverse()); // Reverse to send oldest to newest
         } catch (err) {
             console.error('Error retrieving messages:', err);
         }
     });
+
     socket.on('chatMessage', async (msg) => {
         const room = msg.room;
         const message = {
@@ -30,12 +26,14 @@ const ioCallBack = (io) => (socket) => {
             created_at: new Date(),
         };
         try {
-            await Message.create({
-                messageText: msg.message,
-                user_id: msg.user_id,
-                username: msg.username,
-                imgSrc: msg.avatar,
-                chat_id: msg.room,
+            await prisma.message.create({
+                data: {
+                    messageText: msg.message,
+                    user_id: msg.user_id,
+                    username: msg.username,
+                    imgSrc: msg.avatar,
+                    chat_id: msg.room,
+                },
             });
         } catch (err) {
             console.error(err);
@@ -43,10 +41,12 @@ const ioCallBack = (io) => (socket) => {
         }
         io.to(room).emit('chatMessage', message);
     });
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
+
+    socket.on('disconnect', () => {});
+
     if (!socket.recovered) {
+        // Handle any additional logic for new connections
     }
 };
+
 export default ioCallBack;

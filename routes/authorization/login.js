@@ -2,13 +2,12 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
-import { Account } from '../../models/index.js';
-var router = express.Router();
+import prisma from '../../lib/prisma.js';
+const router = express.Router();
 
 router.post('/login', async function (req, res, next) {
-    var email = req.body.email;
-    var password = req.body.password;
-    var recaptchaResponse = req.body.recaptchaResponse;
+    const { email, password, recaptchaResponse } = req.body;
+
     try {
         const response = await axios.get('https://www.google.com/recaptcha/api/siteverify', {
             params: {
@@ -16,44 +15,38 @@ router.post('/login', async function (req, res, next) {
                 response: recaptchaResponse,
             },
         });
+
         if (!response.data.success) {
-            // The reCAPTCHA was not verified successfully. Send an error response
-            res.status(400).json({ message: 'reCAPTCHA verification failed' });
-            return;
+            return res.status(400).json({ message: 'reCAPTCHA verification failed' });
         }
 
-        // The reCAPTCHA was verified successfully. Continue with registration...
-        // ...
+        const account = await prisma.account.findUnique({ where: { email } });
+
+        if (!account) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        const passwordMatch = await bcrypt.compare(password, account.password);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        const token = jwt.sign({ _id: account.id }, process.env.SECRET_TOKEN);
+
+        res.cookie('access-token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'None',
+            path: '/',
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+        });
+
+        res.json({ message: 'Login successful', accessToken: token });
     } catch (error) {
-        // Handle any errors that occurred while verifying the reCAPTCHA
+        console.error('Error during login:', error);
         next(error);
     }
-
-    // Find the user in the database
-    var account = await Account.findOne({ where: { email: email } });
-    if (!account) {
-        return res.status(401).json({ message: 'Invalid credentials' });
-    }
-    const passwordMatch = await bcrypt.compare(password, account.password);
-    // If account not found or password doesn't match
-    if (!passwordMatch) {
-        return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    // If credentials are valid, create a JWT
-    var token = jwt.sign({ _id: account._id }, process.env.SECRET_TOKEN);
-
-    // Set the token as a cookie on the client
-    res.cookie('access-token', token, {
-        httpOnly: true, // Recommended to prevent access from client-side scripts
-        secure: true, // Ensure cookie is sent over HTTPS
-        sameSite: 'None', // Allow cookie to be sent in cross-site requests
-        path: '/', // Makes the cookdie available across the entire domain
-        maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie expiration (30 days)
-    });
-
-    // Send success response
-    res.json({ message: 'Login successful', accessToken: token });
 });
 
 export default router;

@@ -1,0 +1,223 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql" // or any other provider you use
+  url      = env("DATABASE_URL")
+}
+
+
+
+model Account {
+  id         String   @id  @map("_id")
+  email      String   @unique
+  password   String
+  User       User?
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model User {
+  id         String   @id @unique @map("_id")
+  account_id String   @unique 
+  username   String
+  dateOfBirth String
+  imgSrc     String
+  userTag    String   @unique
+  Account    Account  @relation(fields: [account_id], references: [id])
+  ProjectUser ProjectUser[]
+  MicroTaskUser MicroTaskUser[]
+  MacroTaskUser MacroTaskUser[]
+  ActivityUser ActivityUser[]
+  Messages     Message[]
+  createdAt   DateTime @default(now()) 
+  updatedAt   DateTime? 
+}
+
+model ProjectUser {
+  user_id    String
+  project_id Int
+  User       User     @relation(fields: [user_id], references: [id])
+  Project    Project  @relation(fields: [project_id], references: [id])
+  @@id([user_id, project_id])
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model MicroTask {
+  id         Int        @id @default(autoincrement()) @map("_id")
+  title      String
+  project_id Int?
+  limits     String?
+  dependent  String[]
+  startTime  String
+  endTime    String
+  status     String?
+  overview   String?
+  activities_id Int[]
+  history_id  Int      @unique
+  chat_id     Int      @unique
+  Project    Project?  @relation(fields: [project_id], references: [id]) 
+  MicroTaskUser MicroTaskUser[]
+  Chat       Chat?
+  History    History?
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model MacroTask {
+  id         Int        @id @default(autoincrement())  @map("_id")
+  title      String
+  project_id Int?
+  dependent  String[]
+  startTime  String
+  endTime    String
+  status     String?
+  overview   String?
+  microTasks_id Int[]
+  activities_id Int[]
+  history_id  Int      @unique
+  chat_id     Int      @unique
+  Project    Project?  @relation(fields: [project_id], references: [id])
+  MacroTaskUser MacroTaskUser[]
+  Chat       Chat?
+  History    History?
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model MicroTaskUser {
+  user_id       String
+  microTask_id  Int
+  userPermision String
+  User          User       @relation(fields: [user_id], references: [id])
+  MicroTask     MicroTask  @relation(fields: [microTask_id], references: [id])
+  @@id([user_id, microTask_id])
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime?
+}
+
+model MacroTaskUser {
+  user_id      String
+  macroTask_id Int
+  userPermision String
+  User         User       @relation(fields: [user_id], references: [id])
+  MacroTask    MacroTask  @relation(fields: [macroTask_id], references: [id])
+  @@id([user_id, macroTask_id])
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model ActivityUser {
+  user_id     String
+  activity_id Int
+  userPermision String
+  User        User      @relation(fields: [user_id], references: [id])
+  Activity    Activity  @relation(fields: [activity_id], references: [id])
+  @@id([user_id, activity_id])
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model Chat {
+  id          Int       @id @default(autoincrement())  @map("_id")
+  microTask_id Int?      @unique
+  macroTask_id Int?      @unique
+  activity_id  Int?      @unique
+  MicroTask    MicroTask? @relation(fields: [microTask_id], references: [id])
+  MacroTask    MacroTask? @relation(fields: [macroTask_id], references: [id])
+  Activity     Activity? @relation(fields: [activity_id], references: [id])
+  Message      Message[]
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model Message {
+  id          Int      @id @default(autoincrement())  @map("_id")
+  chat_id     Int
+  imgSrc      String
+  username    String
+  user_id     String
+  messageText String
+  Chat        Chat     @relation(fields: [chat_id], references: [id])
+  User        User     @relation(fields: [user_id], references: [id])
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model Project {
+  id          Int       @id @default(autoincrement())  @map("_id")
+  title       String    @unique
+  ProjectUser ProjectUser[]
+  MicroTask   MicroTask[]
+  MacroTask   MacroTask[]
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model Activity {
+  id          Int        @id @default(autoincrement())  @map("_id")
+  title       String
+  request     String
+  limits      String
+  fileAttach_id Int[]
+  chat_id     Int        @unique
+  history_id  Int        @unique
+  status      String
+  FileAttach  FileAttach[]
+  ActivityUser ActivityUser[]
+  Chat        Chat?
+  History     History?
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model History {
+  id          Int       @id @default(autoincrement())  @map("_id")
+  microTask_id Int?     @unique
+  macroTask_id Int?     @unique
+  activity_id  Int?     @unique
+
+  historyTexts_id Int[]
+  MicroTask    MicroTask? @relation(fields: [microTask_id], references: [id])
+  MacroTask    MacroTask? @relation(fields: [macroTask_id], references: [id])
+  Activity     Activity? @relation(fields: [activity_id], references: [id])
+  HistoryText  HistoryText[]
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model HistoryText {
+  id          Int       @id @default(autoincrement())  @map("_id")
+  text        String
+  history_id  Int
+  entity      String[]
+  History     History   @relation(fields: [history_id], references: [id])
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model FileAttach {
+  id          Int       @id @default(autoincrement())  @map("_id")
+  activity_id Int
+  name        String
+  type        String
+  weight      String
+  src         String
+  Activity    Activity  @relation(fields: [activity_id], references: [id])
+  createdAt  DateTime @default(now()) 
+  updatedAt  DateTime? 
+}
+
+model UserTagCount {
+  count     String
+  uniqueKey String @id @unique @default("unique")
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime? 
+}
