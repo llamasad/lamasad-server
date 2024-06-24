@@ -72,4 +72,4 @@ app.use(function (err, req, res, next) {
     res.json({ error: err.message });
 });
 
-export { app, server };
+export { app, server, __dirname };
